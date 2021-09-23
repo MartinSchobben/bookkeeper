@@ -2,3 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# remove files and dirs created during execution
+_accountant.yml
+*.RDS
+invoice-library/
