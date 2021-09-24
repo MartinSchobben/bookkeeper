@@ -4,6 +4,9 @@
 .Ruserdata
 
 # remove files and dirs created during execution
+_bookdown.yml
 _accountant.yml
+_output.yml
+*.Rmd
 *.RDS
 invoice-library/

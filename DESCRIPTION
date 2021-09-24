@@ -15,16 +15,19 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports: 
+    bookdown,
     dplyr,
     fs,
     httr,
+    komaletter,
     magrittr,
     readxl,
     rlang (>= 0.1.2),
     stringr,
     tibble,
     tidyr,
-    yaml
+    yaml,
+    ymlthis
 Suggests: 
     roxygen2,
     testthat (>= 3.0.0)

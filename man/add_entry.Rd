@@ -20,3 +20,7 @@ add_entry(
 \description{
 Add journal entry
 }
+\examples{
+add_entry(Sys.Date(), "$", 1000, 200, "credit", "BFvaLenLenLn1", "The bank",
+          "start-up", "invoice.pdf", 1)
+}

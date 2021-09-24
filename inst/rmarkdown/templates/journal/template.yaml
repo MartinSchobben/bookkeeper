@@ -1,0 +1,4 @@
+name: journal
+description: >
+   A template for general journal entries
+create_dir: FALSE
