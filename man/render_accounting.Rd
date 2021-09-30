@@ -4,13 +4,17 @@
 \alias{render_accounting}
 \title{Render the account reports}
 \usage{
-render_accounting(template)
+render_accounting(type, template, output = "bookdown::pdf_book")
 }
 \arguments{
+\item{type}{Type of journal}
+
 \item{template}{Type of output}
+
+\item{output}{Type of format}
 }
 \value{
-
+Rmarkdown file
 }
 \description{
 Render the account reports

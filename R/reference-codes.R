@@ -1,4 +1,13 @@
-#' Family of functions to query reference codes
+#' Family of functions to query reference codes.
+#'
+#' Often accountants use standardized reference codes to assign booking to
+#' certain journal posts and account on the general ledger. These functions make
+#' it easy to query this database; checking the description of the account based
+#' on the reference code (`check_account_ref()`) and search the reference code
+#' given a set of keywords describing the post (`search_account_ref()`). The
+#' reference codes are currently only supported for the Dutch
+#' \href{https://www.referentiegrootboekschema.nl/ondernemers/werken-met-rgs}{RGS}
+#' reference code scheme.
 #'
 #' @param account_ref A character string of the account reference code.
 #' @param keywords A character string or vector to query the data base reference
@@ -14,17 +23,25 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # have an account made
+#' create_accountant()
+#'
 #' # Use code reference to find description
-#' check_account_ref("BFvaOvrVgbBej")
+#' check_account_ref("101010")
+#'
 #' # Use keywords to find a code reference that reflect the invoice type
-#' search_account_ref(c("lening", "mutaties"), "&", type =c("C", "D")
+#' search_account_ref(c("lening", "mutaties"), "&", type =c("C", "D"))
+#' }
 check_account_ref <- function(account_ref) {
 
   # checks args
   assertthat::assert_that(is.character(account_ref))
 
-  readRDS("SBR.RDS") %>%
-    dplyr::filter(`reference code` == account_ref)
+  # load references (or from create source if needed)
+  if (!fs::file_exists(".SBR.RDS")) get_standard_business_reporting()
+  readRDS(".SBR.RDS") %>%
+    dplyr::filter(.data$`reference code` == account_ref)
 }
 #' @rdname check_account_ref
 #'
@@ -36,6 +53,7 @@ search_account_ref <- function(keywords, search = "|" ,type = c("C", "D")) {
   assertthat::assert_that(is.character(search), search %in% c("|", "&"))
   assertthat::assert_that(is.character(type), all(type %in% c("C", "D")))
 
+  # exclusive or inclusive search
   if (search == "&") {
     keywords <- purrr::map2_chr(
       keywords,
@@ -44,12 +62,15 @@ search_account_ref <- function(keywords, search = "|" ,type = c("C", "D")) {
     )
   }
 
+  # final regex
   keywords <- stringr::str_c(keywords, collapse = "|")
-
   types <- stringr::str_c(type, collapse = "|")
-  readRDS("SBR.RDS")  %>%
-    dplyr::filter(stringr::str_detect(`description short`, keywords)) %>%
-    dplyr::filter(stringr::str_detect(direction, types))
+
+  # load references (or from create source if needed)
+  if (!fs::file_exists(".SBR.RDS")) get_standard_business_reporting()
+  readRDS(".SBR.RDS")  %>%
+    dplyr::filter(stringr::str_detect(.data$`description short`, keywords)) %>%
+    dplyr::filter(stringr::str_detect(.data$direction, types))
 }
 
 #-------------------------------------------------------------------------------
@@ -63,7 +84,7 @@ get_standard_business_reporting <- function() {
   # get country from accoutant's profile (yml)
   country <- yaml::read_yaml("_accountant.yml")$country
 
-  tb_refs <- bookkeeper::code_refs %>%
+  tb_refs <- code_refs %>%
     dplyr::filter(country == country) %>%
     purrr::flatten()
 
@@ -71,6 +92,8 @@ get_standard_business_reporting <- function() {
   callxl <- rlang::call2("read_xlsx", expr(tf), !!!tb_refs$args_read, .ns = "readxl")
   suppressMessages(eval(callxl)) %>%
     dplyr::select(!!!tb_refs$var_select) %>%
+    # select for one man business
+    dplyr::filter(.data$`one-man business` == 1) %>%
     tidyr::drop_na() %>%
-    saveRDS("SBR.RDS")
+    saveRDS(".SBR.RDS")
 }

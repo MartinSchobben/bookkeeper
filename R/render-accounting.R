@@ -4,7 +4,7 @@
 #' @param template Type of output
 #' @param output Type of format
 #'
-#' @return
+#' @return Rmarkdown file
 #' @export
 #'
 render_accounting <- function(type, template, output = "bookdown::pdf_book") {

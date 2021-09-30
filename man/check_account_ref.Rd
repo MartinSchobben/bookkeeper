@@ -3,7 +3,7 @@
 \name{check_account_ref}
 \alias{check_account_ref}
 \alias{search_account_ref}
-\title{Family of functions to query reference codes}
+\title{Family of functions to query reference codes.}
 \usage{
 check_account_ref(account_ref)
 
@@ -26,11 +26,24 @@ One or more entries form the coder reference database in tibble
 format.
 }
 \description{
-Family of functions to query reference codes
+Often accountants use standardized reference codes to assign booking to
+certain journal posts and account on the general ledger. These functions make
+it easy to query this database; checking the description of the account based
+on the reference code (\code{check_account_ref()}) and search the reference code
+given a set of keywords describing the post (\code{search_account_ref()}). The
+reference codes are currently only supported for the Dutch
+\href{https://www.referentiegrootboekschema.nl/ondernemers/werken-met-rgs}{RGS}
+reference code scheme.
 }
 \examples{
+\dontrun{
+# have an account made
+create_accountant()
+
 # Use code reference to find description
-check_account_ref("BFvaOvrVgbBej")
+check_account_ref("101010")
+
 # Use keywords to find a code reference that reflect the invoice type
-search_account_ref(c("lening", "mutaties"), "&", type =c("C", "D")
+search_account_ref(c("lening", "mutaties"), "&", type =c("C", "D"))
+}
 }
