@@ -1,0 +1,46 @@
+---
+output: bookkeeper::invoice_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r pipe}
+`%>%` <- dplyr::`%>%`
+```
+
+
+**Delivered on:** 
+
+
+```{r costs, results = "asis"}
+costs <- readRDS(params$data) %>% 
+  dplyr::mutate(
+    `VAT (%)` = dplyr::if_else(is.na(`VAT (%)`), "", paste("VAT", `VAT (%)`, "%")),
+    price = sprintf("%.2f", price)
+    )
+# print
+kableExtra::kbl(costs, booktabs = TRUE, col.names = NULL, align = "lccr") %>% 
+  kableExtra::kable_styling(full_width = TRUE, font_size = 10) %>% 
+  kableExtra::row_spec(
+    c(nrow(costs) - 3, nrow(costs) - 1),
+    hline_after = TRUE
+    ) %>%
+  kableExtra::row_spec(
+    nrow(costs),
+    bold = TRUE,
+    hline_after = TRUE
+    ) %>% 
+  kableExtra::column_spec(1, width = "30em") %>%
+  kableExtra::column_spec(2, width = "5em") %>% 
+  kableExtra::column_spec(3, width = "2em") %>% 
+  kableExtra::column_spec(4, width = "4em") %>%
+  kableExtra::add_indent(c(nrow(costs) - 2, nrow(costs) - 1))
+```
+
+\vspace{3em}
+
+To be paid within 30 days of invoice date. Please send payment to `r params$bank_num` with invoice number `r params$invoice_num` and customer number `r params$customer_num`.
+
