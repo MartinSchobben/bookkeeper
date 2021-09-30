@@ -4,6 +4,18 @@
 # bookkeeper
 
 <!-- badges: start -->
+
+[![Travis build
+status](https://travis-ci.com/MartinSchobben/bookkeeper.svg?branch=master)](https://travis-ci.com/MartinSchobben/bookkeeper)
+[![R-CMD-check](https://github.com/MartinSchobben/bookkeeper/workflows/R-CMD-check/badge.svg)](https://github.com/MartinSchobben/bookkeeper/actions)
+[![Project Status: Concept – Minimal or no implementation has been done
+yet, or the repository is only intended to be a limited example, demo,
+or
+proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://choosealicense.com/licenses/mit/)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2021--09--30-yellowgreen.svg)](/commits/master)
+[![Codecov test
+coverage](https://codecov.io/gh/MartinSchobben/bookkeeper/branch/master/graph/badge.svg)](https://codecov.io/gh/MartinSchobben/bookkeeper?branch=master)
 <!-- badges: end -->
 
 Bookkeeper is meant to provide a convenient solution for bookkeeping and

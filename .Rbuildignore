@@ -6,3 +6,5 @@
 ^data-raw$
 ^_accountant\.yml$
 ^LICENSE\.md$
+^\.travis\.yml$
+^codecov\.yml$

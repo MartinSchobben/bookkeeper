@@ -35,6 +35,7 @@ Imports:
     yaml,
     ymlthis
 Suggests: 
+    covr,
     knitr,
     roxygen2,
     testthat (>= 3.0.0)
