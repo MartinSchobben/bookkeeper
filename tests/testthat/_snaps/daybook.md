@@ -8,7 +8,7 @@
       # A tibble: 1 x 11
         `date of transaction` daybook `account refere~ entity comment `invoice number`
         <date>                <chr>              <dbl> <chr>  <chr>              <dbl>
-      1 2021-09-30            bank             805020. ABN-A~ start-~                1
+      1 2021-10-01            bank             805020. ABN-A~ start-~                1
       # ... with 5 more variables: direction <chr>, currency <chr>, amount <dbl>,
       #   high VAT <dbl>, low VAT <dbl>
 
@@ -21,8 +21,8 @@
       # A tibble: 2 x 11
         `date of transaction` daybook `account refere~ entity comment `invoice number`
         <date>                <chr>              <dbl> <chr>  <chr>              <dbl>
-      1 2021-09-30            bank             805020. ABN-A~ start-~                1
-      2 2021-09-30            bank             805020. ING    start-~                2
+      1 2021-10-01            bank             805020. ABN-A~ start-~                1
+      2 2021-10-01            bank             805020. ING    start-~                2
       # ... with 5 more variables: direction <chr>, currency <chr>, amount <dbl>,
       #   high VAT <dbl>, low VAT <dbl>
 

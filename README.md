@@ -13,7 +13,7 @@ yet, or the repository is only intended to be a limited example, demo,
 or
 proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://choosealicense.com/licenses/mit/)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2021--09--30-yellowgreen.svg)](/commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2021--10--01-yellowgreen.svg)](/commits/master)
 [![Codecov test
 coverage](https://codecov.io/gh/MartinSchobben/bookkeeper/branch/master/graph/badge.svg)](https://codecov.io/gh/MartinSchobben/bookkeeper?branch=master)
 <!-- badges: end -->
@@ -27,7 +27,7 @@ still under development.
 
 ## Installation
 
-You can install the released version of bookkeeper from GitHub with
+You can install the development version of bookkeeper from GitHub with
 devtools:
 
 ``` r

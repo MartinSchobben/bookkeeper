@@ -18,7 +18,7 @@ render_invoice(
 
 add_bill_entry(description, VAT, currency, price, .group = "items")
 
-make_bill(currency_out = "€", lang = "en")
+make_bill(currency_out = intToUtf8(8364), lang = "en")
 
 invoice_document(..., keep_tex = FALSE)
 }
@@ -52,7 +52,7 @@ code for debtors.}
 
 \item{.group}{Add grouping key to bill entry (default = \code{"items"}).}
 
-\item{currency_out}{Currency to be used on the bill (default = \code{""}).}
+\item{currency_out}{Currency to be used on the bill (default = \code{"€"}).}
 
 \item{...}{Additional arguments supplied to Rmarkdown.}
 

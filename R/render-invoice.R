@@ -169,7 +169,7 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
 
   # translate VAT taxonomy
   if (lang != "en") {
-    bank_trans <- VAT_translator(accountant_profile$bank[1:2], "en", lang)
+    bank_trans <- VAT_translator(accountant_profile$bank, lang, "en")
   }
 
   # make yml
@@ -232,7 +232,7 @@ add_bill_entry <- function(description, VAT, currency, price, .group = "items") 
 #' @rdname render_invoice
 #'
 #' @export
-make_bill <- function(currency_out = "€", lang = "en") {
+make_bill <- function(currency_out = intToUtf8(8364), lang = "en") {
 
   # checks args
   assertthat::assert_that(
@@ -304,16 +304,21 @@ invoice_numbering <- function(dir) {
 }
 
 # translate the VAT taxonomy between languages
-VAT_translator <- function(words, lang_in = "en", lang_out) {
+VAT_translator <- function(words, lang_out, lang_in = "en") {
   original <- purrr::map_chr(words, ~stringr::str_split(.x, ":")[[1]][1])
-  trans <- purrr::map_chr(original, ~translator(.x, lang_in, lang_out))
+  trans <- purrr::map_chr(original, ~translator(.x, lang_out, lang_in))
+  trans[is.na(trans)] <- original[is.na(trans)]
   stringr::str_replace(words, original, trans)
 }
 
-translator <- function(word, lang_in, lang_out) {
+translator <- function(word, lang_out, lang_in) {
   trans_in <- trans_langs[, lang_in, drop = TRUE]
   trans_lg <- stringr::str_detect(trans_in, paste0("^\\Q", word, "\\E$"))
-  trans_langs[trans_lg, lang_out, drop = TRUE]
+  if (any(trans_lg)) {
+    return(trans_langs[trans_lg, lang_out, drop = TRUE])
+  } else {
+    return(NA_character_)
+  }
 }
 
 # to calculate VAT from inclusive bill prices
@@ -362,6 +367,3 @@ vat_calculater <- function(bill, calc_nms, lang) {
       VAT_class = NA
     )
 }
-
-
-

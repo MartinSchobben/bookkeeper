@@ -1,16 +1,18 @@
 Package: bookkeeper
-Title: What the Package Does (One Line, Title Case)
+Title: Covenient bookkeeping tools
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person(
+       "Martin",
+       "Schobben",
+       email = "schobbenmartin@gmail.com",
+       role = c("aut", "cre"),
+       comment = c(ORCID = "0000-0001-8560-0037")
+       )
+Description: Bookkeeper is meant to provide a convenient solution for bookkeeping and administration in R. It provides features to create and store invoices, maintain daybooks for e.g., sales and purchases, and a customer data base. In the end, this managing of files can be used to generate a general ledger and an income statement. However, these features are still under development.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports: 

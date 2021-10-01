@@ -34,7 +34,7 @@ Bookkeeper is meant to provide a convenient solution for bookkeeping and adminis
 
 ## Installation
 
-You can install the released version of bookkeeper from GitHub with devtools:
+You can install the development version of bookkeeper from GitHub with devtools:
 
 ``` r
 # Install point from GitHub: 
