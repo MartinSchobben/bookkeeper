@@ -1,11 +1,17 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-language: R
-install:
-  - Rscript -e 'if (system.file(package="renv") == "") install.packages("renv")'
-  - Rscript -e "renv::restore()"
+language: r
+r: release
 cache:
   directories:
     - $HOME/.local/share/renv
     - $TRAVIS_BUILD_DIR/renv/library
   packages: true
+
+install:
+  - Rscript -e 'if (system.file(package="renv") == "") install.packages("renv")'
+  - Rscript -e "renv::restore()"
+
+script:
+- R CMD build .
+- R CMD check *tar.gz --as-cran
