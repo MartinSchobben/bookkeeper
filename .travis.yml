@@ -6,12 +6,12 @@ cache:
   directories:
     - $HOME/.local/share/renv
     - $TRAVIS_BUILD_DIR/renv/library
-  packages: true
+#  packages: true
 
 install:
   - Rscript -e 'if (system.file(package="renv") == "") install.packages("renv")'
   - Rscript -e "renv::restore()"
 
-script:
-- R CMD build .
-- R CMD check *tar.gz --as-cran
+# script:
+# - R CMD build .
+# - R CMD check *tar.gz --as-cran
