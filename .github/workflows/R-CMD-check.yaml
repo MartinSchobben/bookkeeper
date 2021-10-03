@@ -79,7 +79,7 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
-      - uses: r-lib/actions/check-r-package@v1
+      - uses: r-lib/actions/check-r-package@master # use master branche for build_args
         with:
           build_args: "--no-build-vignettes"
 
