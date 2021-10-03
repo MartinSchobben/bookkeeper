@@ -81,7 +81,7 @@ jobs:
 
       - uses: r-lib/actions/check-r-package@master # use master branch for build_args
         with:
-          build_args:|
+          build_args: |
             --no-build-vignettes
 
       - name: Show testthat output
