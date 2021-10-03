@@ -80,6 +80,8 @@ jobs:
           extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v1
+        with:
+          build_args: "--no-build-vignettes"
 
       - name: Show testthat output
         if: always()
