@@ -27,6 +27,7 @@
 #' @param .group Add grouping key to bill entry (default = `"items"`).
 #' @param currency_out Currency to be used on the bill (default = `"€"`).
 #' @param lang Language, defaults to English (`"en"`).
+#' @param save_bill Logical indicating whether to save the bill in RDS format.
 #' @param ... Additional arguments supplied to Rmarkdown.
 #' @param keep_tex Keep the tex file.
 #'
@@ -101,7 +102,7 @@
 render_invoice <- function(customer_num, bill = NULL, lang = "en",
                            account = search_account_ref("Handelsdebiteuren")$`reference number`,
                            open_doc = rlang::is_interactive(),
-                           quiet = FALSE) {
+                           quiet = FALSE, save_bill = TRUE) {
 
   # checks args
   assertthat::assert_that(is.character(customer_num), nchar(customer_num) == 6)
@@ -172,7 +173,7 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
     bank_trans <- VAT_translator(accountant_profile$bank, lang, "en")
   }
 
-  # make yml
+  # make yml and rmarkdown from template
   letter_id <- list(
     address = unname(unlist(address)[!is.na(address)][-1]),
     subject = if (lang == "en") "INVOICE" else if (lang == "nl") "FACTUUR",
@@ -199,6 +200,16 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
       open_doc = open_doc
       )
 
+  # save bill
+  if(isTRUE(save_bill)) {
+    saveRDS(
+      bill,
+      fs::path("invoice-library", "debit", invoice_name, ext = "RDS")
+      )
+  }
+
+  # discard temporary bill
+  fs::file_delete(bill_path)
 }
 #' @rdname render_invoice
 #'
@@ -232,7 +243,8 @@ add_bill_entry <- function(description, VAT, currency, price, .group = "items") 
 #' @rdname render_invoice
 #'
 #' @export
-make_bill <- function(currency_out = intToUtf8(8364), lang = "en") {
+make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
+                      save_bill = TRUE) {
 
   # checks args
   assertthat::assert_that(
@@ -251,10 +263,12 @@ make_bill <- function(currency_out = intToUtf8(8364), lang = "en") {
   totals <- vat_calculater(bill, calc_nms, lang)
 
   new_bill <- dplyr::bind_rows(bill, totals)
-  bill <- saveRDS(
-    new_bill,
-    fs::path("invoice-library", "debit", ".bill", ext = "RDS")
-    )
+  if (isTRUE(save_bill)) {
+    bill <- saveRDS(
+      new_bill,
+      fs::path("invoice-library", "debit", ".bill", ext = "RDS")
+      )
+  }
   new_bill
 }
 #' @rdname render_invoice

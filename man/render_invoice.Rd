@@ -13,12 +13,13 @@ render_invoice(
   lang = "en",
   account = search_account_ref("Handelsdebiteuren")$`reference number`,
   open_doc = rlang::is_interactive(),
-  quiet = FALSE
+  quiet = FALSE,
+  save_bill = TRUE
 )
 
 add_bill_entry(description, VAT, currency, price, .group = "items")
 
-make_bill(currency_out = intToUtf8(8364), lang = "en")
+make_bill(currency_out = intToUtf8(8364), lang = "en", save_bill = TRUE)
 
 invoice_document(..., keep_tex = FALSE)
 }
@@ -41,6 +42,8 @@ code for debtors.}
 (default = \code{rlang::\link[rlang:is_interactive]{is_interactive}()}).}
 
 \item{quiet}{Should message not be printed (default = \code{FALSE}).}
+
+\item{save_bill}{Logical indicating whether to save the bill in RDS format.}
 
 \item{description}{Add a description of the item.}
 

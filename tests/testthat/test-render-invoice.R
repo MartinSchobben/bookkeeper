@@ -53,6 +53,7 @@ test_that("increase invoice number", {
     "€",
     1500
   )
+  # entry
   add_bill_entry(
     "Vormgeving (30 uur à € 60)",
     21,
@@ -91,4 +92,20 @@ test_that("translator check", {
   clean_book()
 })
 
+# two bill entries at once
+test_that("two bill entries at once", {
+  # setup
+  usethis::local_project(force = TRUE)
+  expect_snapshot(
+    # double entry
+    add_bill_entry(
+      c("10 foto’s à € 150", "Vormgeving (30 uur à € 60)"),
+      21,
+      "€",
+      c(1500, 1800)
+    )
+  )
+  # clean-up
+  clean_book()
+})
 
