@@ -55,7 +55,10 @@ add_daybook_entry <- function(date, daybook, account, entity, comment,
     all(sapply(c(amount, account, invoice_num), is.numeric))
   )
   assertthat::assert_that(
-    all(sapply(c(currency, direction, entity, comment, VAT_class), is.character))
+    all(sapply(
+      c(currency, direction, entity, comment, VAT_class),
+      is.character
+    ))
   )
   # levels of day book
   lvl_daybook <- c("sales", "purchases", "bank", "memorial")
@@ -67,7 +70,13 @@ add_daybook_entry <- function(date, daybook, account, entity, comment,
     )
 
   # make new name for invoice file and store in dedicated lib
-  invoice_name <- paste(entity, direction, invoice_num, as.character(date), sep = "_")
+  invoice_name <- paste(
+    entity,
+    direction,
+    invoice_num,
+    as.character(date),
+    sep = "_"
+    )
 
   # store user call args
   daybook_args <- rlang::enquos(
@@ -134,7 +143,8 @@ add_daybook_entry <- function(date, daybook, account, entity, comment,
 #-------------------------------------------------------------------------------
 # Helper functions
 #-------------------------------------------------------------------------------
-library_entry <- function(library_name, vars, .create_dir = TRUE, .alt_path = NULL) {
+library_entry <- function(library_name, vars, .create_dir = TRUE,
+                          .alt_path = NULL) {
 
   path_to_library <- fs::path(library_name, ext = "RDS")
 

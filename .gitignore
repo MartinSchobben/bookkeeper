@@ -6,8 +6,8 @@
 _bookdown.yml
 _accountant.yml
 _output.yml
-*.txt
 *.RDS
 invoice-library/
 _book/
 inst/doc
+.Rprofile
