@@ -6,7 +6,7 @@ test_that("Check that daybook entries works", {
   # enter invoice for creditors to daybook
   expect_snapshot(
     add_daybook_entry(
-      as.Date("12-07-2011"),
+      as.Date("2011-07-12"),
       "bank",
       0805020.01,
       "ABN-AMBRO",
@@ -23,7 +23,7 @@ test_that("Check that daybook entries works", {
   )
   expect_snapshot(
     add_daybook_entry(
-      as.Date("12-07-2011"),
+      as.Date("2011-07-13"),
       "bank",
       0805020.01,
       "ING",

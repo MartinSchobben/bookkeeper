@@ -8,10 +8,9 @@ cache:
     - $HOME/.local/share/renv
     - $TRAVIS_BUILD_DIR/renv/library
 #  packages: true
-
 install:
   - Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
   - Rscript -e "renv::restore()"
 script:
-  - R CMD build . #--no-build-vignettes
+  - R CMD build . --no-build-vignettes
   - R CMD check *tar.gz --as-cran
