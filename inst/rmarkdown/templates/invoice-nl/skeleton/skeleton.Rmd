@@ -7,42 +7,12 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-```{r pipe}
-`%>%` <- dplyr::`%>%`
-```
-
 
 **Geleverd op:** 
 
 
 ```{r costs, results = "asis"}
-costs <- readRDS(params$data)  
-n_upper <-nrow(tidyr::drop_na(costs))
-costs <- dplyr::mutate(
-  costs,
-  VAT_class = 
-    dplyr::if_else(is.na(VAT_class), "", paste("Btw", VAT_class, "%")),
-  price = sprintf("%.2f", price)
-  ) %>% 
-  dplyr::select(-group)
-
-# print
-kableExtra::kbl(costs, booktabs = TRUE, col.names = NULL, align = "lccr") %>% 
-  kableExtra::kable_styling(full_width = TRUE, font_size = 10) %>% 
-  kableExtra::row_spec(
-    c(n_upper, nrow(costs) - 1),
-    hline_after = TRUE
-    ) %>%
-  kableExtra::row_spec(
-    nrow(costs),
-    bold = TRUE,
-    hline_after = TRUE
-    ) %>% 
-  kableExtra::column_spec(1, width = "30em") %>%
-  kableExtra::column_spec(2, width = "5em") %>% 
-  kableExtra::column_spec(3, width = "2em") %>% 
-  kableExtra::column_spec(4, width = "4em") %>%
-  kableExtra::add_indent((n_upper + 3) : nrow(costs) - 1)
+bookkeeper::kable_bill(readRDS(params$data))
 ```
 
 \vspace{3em}

@@ -4,6 +4,7 @@
 \alias{render_invoice}
 \alias{add_bill_entry}
 \alias{make_bill}
+\alias{kable_bill}
 \alias{invoice_document}
 \title{Create an invoice}
 \usage{
@@ -20,6 +21,8 @@ render_invoice(
 add_bill_entry(description, VAT, currency, price, .group = "items")
 
 make_bill(currency_out = intToUtf8(8364), lang = "en", save_bill = TRUE)
+
+kable_bill(bill)
 
 invoice_document(..., keep_tex = FALSE)
 }

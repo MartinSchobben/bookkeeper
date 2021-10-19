@@ -264,12 +264,43 @@ make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
 
   new_bill <- dplyr::bind_rows(bill, totals)
   if (isTRUE(save_bill)) {
-    bill <- saveRDS(
+    saveRDS(
       new_bill,
       fs::path("invoice-library", "debit", ".bill", ext = "RDS")
       )
   }
   new_bill
+}
+#' @rdname render_invoice
+#'
+#' @export
+kable_bill <- function(bill) {
+  n_upper <-nrow(tidyr::drop_na(bill))
+  bill <- dplyr::mutate(
+    bill,
+    VAT_class =
+      dplyr::if_else(is.na(VAT_class), "", paste("Btw", VAT_class, "%")),
+    price = sprintf("%.2f", price)
+  ) %>%
+    dplyr::select(-group)
+
+  # print
+  kableExtra::kbl(bill, booktabs = TRUE, col.names = NULL, align = "lccr") %>%
+    kableExtra::kable_styling(full_width = TRUE, font_size = 10) %>%
+    kableExtra::row_spec(
+      c(n_upper, nrow(bill) - 1),
+      hline_after = TRUE
+    ) %>%
+    kableExtra::row_spec(
+      nrow(bill),
+      bold = TRUE,
+      hline_after = TRUE
+    ) %>%
+    kableExtra::column_spec(1, width = "30em") %>%
+    kableExtra::column_spec(2, width = "5em") %>%
+    kableExtra::column_spec(3, width = "2em") %>%
+    kableExtra::column_spec(4, width = "4em") %>%
+    kableExtra::add_indent((n_upper + 3) : nrow(bill) - 1)
 }
 #' @rdname render_invoice
 #'
