@@ -82,7 +82,7 @@ test_that("Setup bill without saving intermediates.", {
   usethis::local_project(force = TRUE)
   setup_book("daybook")
   # bill entry
-  add_bill_entry(
+  bill <- add_bill_entry(
     "Vormgeving (30 uur à € 60)",
     21,
     "€",
@@ -90,6 +90,8 @@ test_that("Setup bill without saving intermediates.", {
     .save = FALSE
   )
   expect_false(fs::dir_exists("invoice-library"))
+  expect_false(fs::file_exists(".bill.RDS"))
+  expect_snapshot(make_bill(lang = "nl", .save = FALSE, .bill = bill))
   # clean-up
   clean_book()
 })

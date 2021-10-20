@@ -144,11 +144,11 @@ add_daybook_entry <- function(date, daybook, account, entity, comment,
 # Helper functions
 #-------------------------------------------------------------------------------
 library_entry <- function(library_name, vars, .create_dir = TRUE,
-                          .alt_path = NULL) {
+                          .alt_path = NULL, .save = TRUE) {
 
   path_to_library <- fs::path(library_name, ext = "RDS")
 
-  if (isTRUE(.create_dir)) {
+  if (isTRUE(.create_dir) & isTRUE(.save)) {
     fs::dir_create(library_name)
     path_to_library <- fs::path(library_name, path_to_library)
   }
@@ -169,7 +169,7 @@ library_entry <- function(library_name, vars, .create_dir = TRUE,
     eval()
 
   # save library
-  saveRDS(library_entry, path_to_library)
+  if (isTRUE(.save)) saveRDS(library_entry, path_to_library)
   library_entry
 }
 

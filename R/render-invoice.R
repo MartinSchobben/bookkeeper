@@ -237,7 +237,8 @@ add_bill_entry <- function(description, VAT, currency, price, .group = "items",
     ".bill",
     bill_args,
     .create_dir = FALSE,
-    .alt_path = if (isTRUE(.save)) fs::path("invoice-library", "debit")
+    .alt_path = if (isTRUE(.save)) fs::path("invoice-library", "debit"),
+    .save = .save
   )
 
 }
@@ -245,14 +246,18 @@ add_bill_entry <- function(description, VAT, currency, price, .group = "items",
 #'
 #' @export
 make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
-                      .save = TRUE) {
+                      .save = TRUE, .bill = NULL) {
 
   # checks args
   assertthat::assert_that(
     all(sapply(c(currency_out, lang), is.character))
   )
 
-  bill <- readRDS(fs::path("invoice-library", "debit", ".bill", ext = "RDS"))
+  if (is.null(.bill)) {
+    bill <- readRDS(fs::path("invoice-library", "debit", ".bill", ext = "RDS"))
+  } else {
+    bill <- .bill
+  }
 
   # calculation names for language
   calc_nms <- dplyr::select(trans_langs, .data$ID, .data$type, {{lang}}) %>%

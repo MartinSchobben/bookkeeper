@@ -1,3 +1,16 @@
+# Setup bill without saving intermediates.
+
+    Code
+      make_bill(lang = "nl", .save = FALSE, .bill = bill)
+    Output
+      # A tibble: 4 x 5
+        description                VAT_class currency price group    
+        <chr>                          <dbl> <chr>    <dbl> <chr>    
+      1 Vormgeving (30 uur à € 60)        21 €         1800 items    
+      2 Subtotaal                         NA €         1800 sub_total
+      3 Btw 21 %                          NA €          378 high VAT 
+      4 Totaal                            NA €         2178 total    
+
 # two bill entries at once
 
     Code
