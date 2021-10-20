@@ -8,7 +8,7 @@ test_that("increase invoice number", {
 })
 
 
-# file test
+# file test with saving intermediate
 test_that("increase invoice number", {
   # setup
   usethis::local_project(force = TRUE)
@@ -75,6 +75,24 @@ test_that("increase invoice number", {
   # clean-up
   clean_book()
   })
+
+# file test without saving intermediate
+test_that("Setup bill without saving intermediates.", {
+  # setup
+  usethis::local_project(force = TRUE)
+  setup_book("daybook")
+  # bill entry
+  add_bill_entry(
+    "Vormgeving (30 uur à € 60)",
+    21,
+    "€",
+    1800,
+    .save = FALSE
+  )
+  expect_false(fs::dir_exists("invoice-library"))
+  # clean-up
+  clean_book()
+})
 
 #check translator
 test_that("translator check", {

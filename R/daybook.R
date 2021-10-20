@@ -167,6 +167,8 @@ library_entry <- function(library_name, vars, .create_dir = TRUE,
     .ns = "tibble"
     ) %>%
     eval()
+
+  # save library
   saveRDS(library_entry, path_to_library)
   library_entry
 }

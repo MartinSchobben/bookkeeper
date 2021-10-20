@@ -27,7 +27,7 @@
 #' @param .group Add grouping key to bill entry (default = `"items"`).
 #' @param currency_out Currency to be used on the bill (default = `"€"`).
 #' @param lang Language, defaults to English (`"en"`).
-#' @param save_bill Logical indicating whether to save the bill in RDS format.
+#' @param .save Logical indicating whether to save the bill in RDS format.
 #' @param ... Additional arguments supplied to Rmarkdown.
 #' @param keep_tex Keep the tex file.
 #'
@@ -214,7 +214,8 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
 #' @rdname render_invoice
 #'
 #' @export
-add_bill_entry <- function(description, VAT, currency, price, .group = "items") {
+add_bill_entry <- function(description, VAT, currency, price, .group = "items",
+                           .save = TRUE) {
 
   # checks args
   assertthat::assert_that(
@@ -236,7 +237,7 @@ add_bill_entry <- function(description, VAT, currency, price, .group = "items") 
     ".bill",
     bill_args,
     .create_dir = FALSE,
-    .alt_path = fs::path("invoice-library", "debit")
+    .alt_path = if (isTRUE(.save)) fs::path("invoice-library", "debit")
   )
 
 }
@@ -244,7 +245,7 @@ add_bill_entry <- function(description, VAT, currency, price, .group = "items") 
 #'
 #' @export
 make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
-                      save_bill = TRUE) {
+                      .save = TRUE) {
 
   # checks args
   assertthat::assert_that(
@@ -263,7 +264,7 @@ make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
   totals <- vat_calculater(bill, calc_nms, lang)
 
   new_bill <- dplyr::bind_rows(bill, totals)
-  if (isTRUE(save_bill)) {
+  if (isTRUE(.save)) {
     saveRDS(
       new_bill,
       fs::path("invoice-library", "debit", ".bill", ext = "RDS")
