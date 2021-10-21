@@ -1,8 +1,8 @@
 ---
-title: "introduction"
+title: "Introduction"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{introduction}
+  %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,6 +14,12 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Setup 
+
 ```{r setup}
-# library(bookkeeper)
+  library(bookkeeper)
 ```
+
+# Usage
+
+This package is meant to provide a convenient solution for bookkeeping and administration in R. It provides features to create and store invoices, maintain daybooks for e.g., sales and purchases, and a customer data base. In the end, this managing of files can be used to generate a general ledger and an income statement. However, these features are still under development.
