@@ -40,5 +40,3 @@ test_that("Check that daybook entries works", {
   # clean-up
   clean_book()
 })
-
-

@@ -137,7 +137,7 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
 
   # make new name for invoice file and store in dedicated lib
   invoice_name <- paste(
-    accountant_profile$company,
+    accountant_profile$author,
     "debit",
     invoice_num,
     as.character(Sys.Date()),
@@ -188,8 +188,7 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
           invoice_num = invoice_num,
           customer_num = customer_num,
           data = paste0(invoice_name, ".RDS")
-          # data = ".bill.RDS"
-          )
+        )
       )
     ) %>%
     append(ymlthis::yml_discard(accountant_profile, c("params", "bank"))) %>%
