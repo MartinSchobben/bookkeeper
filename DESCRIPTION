@@ -22,7 +22,6 @@ Imports:
     fs,
     httr,
     kableExtra,
-    komaletter,
     lubridate,
     magrittr,
     purrr,
@@ -44,4 +43,4 @@ Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
-Remotes: MartinSchobben/komaletter@bank-details
+Remotes: martinschobben/komaletter@bank-details
