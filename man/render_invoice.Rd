@@ -5,7 +5,6 @@
 \alias{add_bill_entry}
 \alias{make_bill}
 \alias{kable_bill}
-\alias{invoice_document}
 \title{Create an invoice}
 \usage{
 render_invoice(
@@ -14,17 +13,26 @@ render_invoice(
   lang = "en",
   account = search_account_ref("Handelsdebiteuren")$`reference number`,
   open_doc = rlang::is_interactive(),
-  quiet = FALSE,
-  save_bill = TRUE
+  quiet = FALSE
 )
 
-add_bill_entry(description, VAT, currency, price, .group = "items")
+add_bill_entry(
+  description,
+  VAT,
+  currency,
+  price,
+  .group = "items",
+  .save = TRUE
+)
 
-make_bill(currency_out = intToUtf8(8364), lang = "en", save_bill = TRUE)
+make_bill(
+  currency_out = intToUtf8(8364),
+  lang = "en",
+  .save = TRUE,
+  .bill = NULL
+)
 
-kable_bill(bill)
-
-invoice_document(..., keep_tex = FALSE)
+kable_bill(.bill)
 }
 \arguments{
 \item{customer_num}{Customer number as a six digit character string.}
@@ -46,8 +54,6 @@ code for debtors.}
 
 \item{quiet}{Should message not be printed (default = \code{FALSE}).}
 
-\item{save_bill}{Logical indicating whether to save the bill in RDS format.}
-
 \item{description}{Add a description of the item.}
 
 \item{VAT}{Add VAT as a percentage to bill entry.}
@@ -58,11 +64,12 @@ code for debtors.}
 
 \item{.group}{Add grouping key to bill entry (default = \code{"items"}).}
 
+\item{.save}{Logical indicating whether to save the bill in RDS format.}
+
 \item{currency_out}{Currency to be used on the bill (default = \code{"€"}).}
 
-\item{...}{Additional arguments supplied to Rmarkdown.}
-
-\item{keep_tex}{Keep the tex file.}
+\item{.bill}{Manual entry of bill as a
+\code{tibble::\link[tibble:tibble]{tibble}} (Default = \code{NULL}).}
 }
 \value{
 A \code{komaletter::\link[komaletter:komaletter]{komaletter}} or

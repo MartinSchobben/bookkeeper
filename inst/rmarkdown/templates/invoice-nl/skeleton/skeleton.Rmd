@@ -1,11 +1,10 @@
 ---
-output: bookkeeper::invoice_document
+output: komaletter::komaletter
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
-
 
 
 **Geleverd op:** 
@@ -15,9 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 bookkeeper::kable_bill(readRDS(params$data))
 ```
 
+
 \vspace{3em}
 
 Betaling graag binnen 14 dagen na factuurdatum op `r params$bank_num` onder vermelding van het factuurnummer: `r params$invoice_num` en het klantnummer: `r params$customer_num`.
-
-
-

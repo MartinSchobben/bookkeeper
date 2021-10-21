@@ -39,10 +39,10 @@
 #' create_accountant(.text = text, quiet = TRUE)
 #' }
 create_accountant <- function(.text = NULL, quiet = FALSE) {
-  # print("Enter your name:")
+  if (isFALSE(quiet)) cat("Enter your companies name:")
   accountant <- list()
   # company name
-  accountant$company <- text_input(.text[1], quiet = quiet)
+  accountant$author <- text_input(.text[1], quiet = quiet)
   # address
   accountant$`return-address` <- c()
   if (isFALSE(quiet)) cat("Street and number:")

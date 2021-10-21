@@ -28,8 +28,8 @@
 #' @param currency_out Currency to be used on the bill (default = `"€"`).
 #' @param lang Language, defaults to English (`"en"`).
 #' @param .save Logical indicating whether to save the bill in RDS format.
-#' @param ... Additional arguments supplied to Rmarkdown.
-#' @param keep_tex Keep the tex file.
+#' @param .bill Manual entry of bill as a
+#' \code{tibble::\link[tibble:tibble]{tibble}} (Default = `NULL`).
 #'
 #'
 #' @return A \code{komaletter::\link[komaletter:komaletter]{komaletter}} or
@@ -102,7 +102,7 @@
 render_invoice <- function(customer_num, bill = NULL, lang = "en",
                            account = search_account_ref("Handelsdebiteuren")$`reference number`,
                            open_doc = rlang::is_interactive(),
-                           quiet = FALSE, save_bill = TRUE) {
+                           quiet = FALSE) {
 
   # checks args
   assertthat::assert_that(is.character(customer_num), nchar(customer_num) == 6)
@@ -187,7 +187,8 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
         list(
           invoice_num = invoice_num,
           customer_num = customer_num,
-          data = ".bill.RDS"
+          data = paste0(invoice_name, ".RDS")
+          # data = ".bill.RDS"
           )
       )
     ) %>%
@@ -201,12 +202,7 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
       )
 
   # save bill
-  if(isTRUE(save_bill)) {
-    saveRDS(
-      bill,
-      fs::path("invoice-library", "debit", invoice_name, ext = "RDS")
-      )
-  }
+  saveRDS(bill, fs::path("invoice-library", "debit", invoice_name, ext = "RDS"))
 
   # discard temporary bill
   fs::file_delete(bill_path)
@@ -253,6 +249,7 @@ make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
     all(sapply(c(currency_out, lang), is.character))
   )
 
+  # read saved bill if .bill == NULL or use bill argument
   if (is.null(.bill)) {
     bill <- readRDS(fs::path("invoice-library", "debit", ".bill", ext = "RDS"))
   } else {
@@ -280,15 +277,15 @@ make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
 #' @rdname render_invoice
 #'
 #' @export
-kable_bill <- function(bill) {
-  n_upper <-nrow(tidyr::drop_na(bill))
+kable_bill <- function(.bill) {
+  n_upper <-nrow(tidyr::drop_na(.bill))
   bill <- dplyr::mutate(
-    bill,
+    .bill,
     VAT_class =
-      dplyr::if_else(is.na(VAT_class), "", paste("Btw", VAT_class, "%")),
-    price = sprintf("%.2f", price)
+      dplyr::if_else(is.na(.data$VAT_class), "", paste("Btw", .data$VAT_class, "%")),
+    price = sprintf("%.2f", .data$price)
   ) %>%
-    dplyr::select(-group)
+    dplyr::select(-.data$group)
 
   # print
   kableExtra::kbl(bill, booktabs = TRUE, col.names = NULL, align = "lccr") %>%
@@ -307,40 +304,6 @@ kable_bill <- function(bill) {
     kableExtra::column_spec(3, width = "2em") %>%
     kableExtra::column_spec(4, width = "4em") %>%
     kableExtra::add_indent((n_upper + 3) : nrow(bill) - 1)
-}
-#' @rdname render_invoice
-#'
-#' @export
-invoice_document <- function(..., keep_tex = FALSE) {
-
-  # resources template
-  template <- rmd_template_path("invoice-en", "resources", "template.tex")
-  default_lco <- rmd_template_path(
-    "invoice-en",
-    "resources",
-    "maintainersDelight.lco"
-    ) %>%
-    fs::path_ext_remove()
-
-  base <- inherit_pdf_document(..., template=template, keep_tex=keep_tex,
-                               md_extensions=c("-autolink_bare_uris"),
-                               pandoc_args=c(paste0("--variable=lco_default:",
-                                                    default_lco)))
-
-  base$knitr$opts_chunk$prompt    <- FALSE
-  base$knitr$opts_chunk$comment   <- '# '
-  base$knitr$opts_chunk$highlight <- TRUE
-
-  return(base)
-}
-
-
-# Call rmarkdown::pdf_document and mark the return value as inheriting pdf_document
-inherit_pdf_document <- function(...){
-  fmt <- rmarkdown::pdf_document(...)
-  fmt$inherits <- "pdf_document"
-
-  return(fmt)
 }
 
 # invoice counter

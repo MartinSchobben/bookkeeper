@@ -24,7 +24,12 @@ setup_book <- function(type = NULL) {
     # get references
     get_standard_business_reporting()
   }
-  if (type == "render-invoice" & !fs::file_exists(fs::path("customer-library", "customer-library", ext = "RDS"))) {
+  if (
+    type == "render-invoice" &
+    !fs::file_exists(
+      fs::path("customer-library", "customer-library", ext = "RDS")
+      )
+    ) {
     setup_book("reference-codes")
     setup_book("daybook")
     # make customer database
@@ -38,8 +43,5 @@ setup_book <- function(type = NULL) {
     )
 
   }
-  # if (fs::dir_exists("customer-library")) fs::dir_delete("customer-library")
-  # if (fs::dir_exists("invoice-library")) fs::dir_delete("invoice-library")
-  # if (fs::dir_exists("daybook")) fs::dir_delete("daybook")
 }
 

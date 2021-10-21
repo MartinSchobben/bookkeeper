@@ -17,8 +17,8 @@ rmd_template_path(template = "invoice-en", type = "skeleton", path = NULL)
 This function comes from the package \code{readr}, and has been modified to access
 the bundled datasets in directory \code{inst/rmarkdown/templates} of \code{bookkeeper}.
 This function make them easy to access. This function is modified from
-\code{\link[readr:readr_example]{readr_example}} of the package
-\code{\link[readr]{readr}}.
+\code{readr_example()} of the package
+\href{https://readr.tidyverse.org/}{readr}.
 }
 \examples{
 rmd_template_path()
