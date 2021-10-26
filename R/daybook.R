@@ -8,6 +8,8 @@
 #' bank, memorial).
 #' @param account A numeric value for ledger account number.
 #' @param entity Describe the transaction (i.e., the company).
+#' @param good The transferable and non-transferable product. Possible options
+#' are "manufactured good", "service" or loans.
 #' @param comment Describe in more detail the transaction.
 #' @param invoice_file The path to the invoice file.
 #' @param invoice_num The invoice number as given on the invoice as a numeric
@@ -30,6 +32,7 @@
 #'  "sales",
 #'  1050,
 #'  "Super-store",
+#'  "manufactured goods",
 #'  "A bunch of things",
 #'  "invoice.txt",
 #'  1,
@@ -40,7 +43,7 @@
 #'  "high-VAT"
 #' )
 #' }
-add_daybook_entry <- function(date, daybook, account, entity, comment,
+add_daybook_entry <- function(date, daybook, account, entity, good, comment,
                               invoice_file, invoice_num, direction,
                               currency, amount, ..., VAT_class) {
 
@@ -60,11 +63,13 @@ add_daybook_entry <- function(date, daybook, account, entity, comment,
       is.character
     ))
   )
-  # levels of day book
+  # levels of day book and product
   lvl_daybook <- c("sales", "purchases", "bank", "memorial")
+  lvl_good <- c("manufactured good", "trading good", "service", "loan")
   assertthat::assert_that(
     direction %in% c("debit", "credit"),
     daybook %in% lvl_daybook,
+    good %in% lvl_good,
     account %in% account_refs,
     msg = "Argument level is not according to naming conventions for accounting adopted here. Please, see the documentation."
     )
@@ -84,6 +89,7 @@ add_daybook_entry <- function(date, daybook, account, entity, comment,
     daybook,
     account,
     entity,
+    good,
     comment,
     invoice_num,
     direction,
@@ -98,12 +104,13 @@ add_daybook_entry <- function(date, daybook, account, entity, comment,
     "daybook",
     "account reference number",
     "entity",
+    "good",
     "comment",
     "invoice number",
     "direction",
     "currency",
     "amount"
-  ) %>%
+    ) %>%
     append(VAT_class)
 
   # add names to args

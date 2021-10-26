@@ -21,3 +21,26 @@ render_accounting <- function(type, template, output = "bookdown::pdf_book") {
   rmarkdown::draft(paste0(template, ".Rmd"), template, package = "bookkeeper")
   bookdown::render_book(output_format = output)
 }
+#' @return
+make_journal <- function(daybook, .lowVAT = 9, .highVAT = 21) {
+
+  ref_code
+
+  if (daybook$daybook == "sales") {
+    daybook <- filter(daybook, .data$daybook == "sales")
+    # debiteuren
+    debit <- c("BVorDebHad" = sum(daybook$amount))
+    # net gains
+    credit <- "WOmz"
+      if (good == "manufactured goods") credit <- paste0(credit, "Nop")
+      if (good == "trading goods") credit <- paste0(credit, "Noh")
+      if (good == "services") credit <- paste0(credit, "Nod")
+    # tax
+    readr::parse_number("VAT 21 %")
+
+  }
+
+
+}
+
+#add_journal_entry

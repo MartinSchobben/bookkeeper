@@ -26,7 +26,7 @@ test_that("increase invoice number", {
     "7009 ZZ Haarlem",
     "Netherlands",
     "NL1093se44"
-  )
+    )
   # no bill throw error
   expect_error(
     render_invoice("060101", lang = "nl", open_doc = FALSE, quiet = TRUE),
@@ -37,35 +37,40 @@ test_that("increase invoice number", {
     "Tekstproductie (80 uur à € 70)",
     21,
     "€",
-    5600
-  )
+    5600,
+    "service"
+    )
   # entry
   add_bill_entry(
     "Ontwerp (vaste prijs)",
     21,
     "€",
-    1250
+    1250,
+    "service"
   )
   # entry
   add_bill_entry(
     "10 foto’s à € 150",
     21,
     "€",
-    1500
+    1500,
+    "manufactured good"
   )
   # entry
   add_bill_entry(
     "Vormgeving (30 uur à € 60)",
     21,
     "€",
-    1800
+    1800,
+    "service"
   )
   # entry
   add_bill_entry(
     "1 kg Suiker",
     9,
     "€",
-    3000
+    3000,
+    "trading good"
   )
   make_bill(lang = "nl")
   expect_message(
@@ -87,6 +92,7 @@ test_that("Setup bill without saving intermediates.", {
     21,
     "€",
     1800,
+    "service",
     .save = FALSE
   )
   expect_false(fs::dir_exists("invoice-library"))
@@ -122,7 +128,8 @@ test_that("two bill entries at once", {
       c("10 foto’s à € 150", "Vormgeving (30 uur à € 60)"),
       21,
       "€",
-      c(1500, 1800)
+      c(1500, 1800),
+      c("commodity", "service")
     )
   )
   # clean-up

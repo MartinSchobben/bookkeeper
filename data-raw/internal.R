@@ -23,7 +23,20 @@ code_refs <- tibble::tibble(
         direction = "D/C"
       )
     )
-)
+  )
 
+
+connections <- tibble::tibble(
+  debit = c(
+    "BVorDebHad"
+  ),
+  credit = list(
+    c("BSchBepBtw", "WOmzNohOlh", "WOmzNohOlv", "WOmzNohOlo")
+  )
+)
+connections <- function(input, lang) {
+
+  input
+  }
 
 usethis::use_data(trans_langs, code_refs, internal = TRUE, overwrite = TRUE)

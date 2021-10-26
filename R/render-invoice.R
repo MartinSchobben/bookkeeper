@@ -153,19 +153,23 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
   }
 
   # add invoice to daybook
-  add_daybook_entry(
-    Sys.Date(),
-    "sales",
-    as.numeric(account), # Debiteuren RGS
-    accountant_profile$company,
-    "Your service",
-    NULL,
-    as.numeric(invoice_num),
-    "debit",
-    unique(bill$currency),
-    dplyr::filter(bill, .data$group == "total")$price,
-    !!! dplyr::filter(bill, stringr::str_detect(.data$group, "VAT"))$price,
-    VAT_class = dplyr::filter(bill, stringr::str_detect(.data$group, "VAT"))$group
+  purrr::walk(
+    dplyr::group_split(bill, .data$good),
+    ~add_daybook_entry(
+      Sys.Date(),
+      "sales",
+      as.numeric(account), # Debiteuren RGS
+      accountant_profile$author,
+      unique(.x$good), # product (commodity or service)
+      "Your service",
+      NULL,
+      as.numeric(invoice_num),
+      "debit",
+      unique(.x$currency),
+      dplyr::filter(.x, .data$group == "total")$price,
+      !!! dplyr::filter(.x, stringr::str_detect(.data$group, "VAT"))$price,
+      VAT_class = dplyr::filter(.x, stringr::str_detect(.data$group, "VAT"))$group
+      )
     )
 
   # translate VAT taxonomy
@@ -209,14 +213,15 @@ render_invoice <- function(customer_num, bill = NULL, lang = "en",
 #' @rdname render_invoice
 #'
 #' @export
-add_bill_entry <- function(description, VAT, currency, price, .group = "items",
-                           .save = TRUE) {
+add_bill_entry <- function(description, VAT, currency, price, good,
+                           .group = "items", .save = TRUE) {
 
   # checks args
   assertthat::assert_that(
     all(sapply(c(description, currency, .group), is.character))
     )
   assertthat::assert_that(is.numeric(VAT), is.numeric(price))
+  assertthat::assert_that(all(good %in% c("manufactured good", "trading good", "service")))
 
   # capture args
   bill_args <- rlang::enquos(
@@ -224,6 +229,7 @@ add_bill_entry <- function(description, VAT, currency, price, .group = "items",
     VAT_class = VAT,
     currency = currency,
     price = price,
+    good = good,
     group = .group
     )
 
@@ -241,7 +247,7 @@ add_bill_entry <- function(description, VAT, currency, price, .group = "items",
 #'
 #' @export
 make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
-                      .save = TRUE, .bill = NULL) {
+                      .save = TRUE, .bill = NULL, .lowVAT = 9, .highVAT = 21) {
 
   # checks args
   assertthat::assert_that(
@@ -262,7 +268,8 @@ make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
   # convert to currency (INCLUDED IN THE FUTURE)
 
   # calculate VAT and totals
-  totals <- vat_calculater(bill, calc_nms, lang)
+  totals <- vat_calculater(bill, calc_nms, lang, lowVAT = .lowVAT,
+                           highVAT = .highVAT)
 
   new_bill <- dplyr::bind_rows(bill, totals)
   if (isTRUE(.save)) {
@@ -277,17 +284,27 @@ make_bill <- function(currency_out = intToUtf8(8364), lang = "en",
 #'
 #' @export
 kable_bill <- function(.bill) {
+
   n_upper <-nrow(tidyr::drop_na(.bill))
-  bill <- dplyr::mutate(
-    .bill,
-    VAT_class =
-      dplyr::if_else(is.na(.data$VAT_class), "", paste("Btw", .data$VAT_class, "%")),
-    price = sprintf("%.2f", .data$price)
-  ) %>%
-    dplyr::select(-.data$group)
+  # transform bill in case of multiple products
+  bill <- dplyr::group_by(.bill,  description = forcats::as_factor(description)) %>%
+    dplyr::summarise(
+      VAT_class = unique(.data$VAT_class),
+      currency = unique(.data$currency),
+      price = sum(.data$price)
+      ) %>%
+    dplyr::mutate(
+      VAT_class =
+        dplyr::if_else(
+          is.na(.data$VAT_class),
+          "",
+          paste("Btw", .data$VAT_class, "%")
+          ),
+      price = sprintf("%.2f", .data$price)
+      )
 
   # print
-  kableExtra::kbl(bill, booktabs = TRUE, col.names = NULL, align = "lccr") %>%
+  kableExtra::kbl(bill, "latex", booktabs = TRUE, col.names = NULL, align = "lccr") %>%
     kableExtra::kable_styling(full_width = TRUE, font_size = 10) %>%
     kableExtra::row_spec(
       c(n_upper, nrow(bill) - 1),
@@ -335,22 +352,26 @@ translator <- function(word, lang_out, lang_in) {
 }
 
 # to calculate VAT from inclusive bill prices
-vat_calculater <- function(bill, calc_nms, lang) {
+vat_calculater <- function(bill, calc_nms, lang, lowVAT, highVAT) {
 
-  dplyr::group_by(bill, .data$VAT_class) %>%
+  dplyr::group_by(bill, .data$good, .data$VAT_class) %>%
     dplyr::summarise(
       VAT_class = unique(.data$VAT_class),
       sub_totals = sum(.data$price),
       .groups = "drop_last"
-    ) %>%
+      ) %>%
     dplyr::mutate(
       VAT_class = .data$VAT_class,
       sub_total = sum(.data$sub_totals),
       VAT = .data$VAT_class / 100 * .data$sub_totals,
       total = sum(.data$VAT) + .data$sub_total,
       .keep = "unused"
-    ) %>%
-    tidyr::pivot_longer(- .data$VAT_class, names_to = "group", values_to = "price") %>%
+      ) %>%
+    tidyr::pivot_longer(
+      -c(.data$good, .data$VAT_class),
+      names_to = "group",
+      values_to = "price"
+      ) %>%
     dplyr::distinct(.data$group, .data$price, .keep_all = TRUE) %>%
     dplyr::mutate(
       group =
@@ -371,10 +392,9 @@ vat_calculater <- function(bill, calc_nms, lang) {
           as.character(.data$description)
         ),
       group = dplyr::case_when(
-        .data$VAT_class == max(.data$VAT_class) & .data$group == "VAT" ~
-          "high VAT",
-        .data$VAT_class == min(.data$VAT_class) & .data$group == "VAT" ~
-          "low VAT",
+        .data$VAT_class == highVAT & .data$group == "VAT" ~ "high VAT",
+        .data$VAT_class == lowVAT & .data$group == "VAT" ~ "low VAT",
+        .data$VAT_class == 0 & .data$group == "VAT" ~ "0 VAT",
         TRUE ~ as.character(.data$group)
         ),
       VAT_class = NA
